@@ -83,7 +83,11 @@ class AutoRebase:
             self.rebase_with_check(branch)
 
 
-if __name__ == '__main__':
+def main():
+    print('hoge')
+
+
+def main_():
     parser = argparse.ArgumentParser()
     parser.add_argument('host', default='https://github.com')
     parser.add_argument('repository', default='sergeant-wizard/auto_rebase')
@@ -97,3 +101,7 @@ if __name__ == '__main__':
         repository=args.repository,
         user_id=args.user_id,
     ).rebase_all()
+
+
+if __name__ == '__main__':
+    main()
