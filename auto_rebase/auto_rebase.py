@@ -87,7 +87,7 @@ def main():
 
     ar = AutoRebase(g=git.cmd.Git(args.path))
 
-    for branch in get_pull_requests(args.host, args.repo, args.user_id):
+    for branch in get_pull_requests(args.host, args.repository, args.user_id):
         ar.rebase_with_check(branch)
 
 
