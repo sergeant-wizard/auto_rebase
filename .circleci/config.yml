@@ -7,7 +7,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "requirements-dev.txt" }}-{{ checksum ".python-version" }}
+            - v1-dependencies-{{ checksum "requirements-dev.txt" }}-{{ checksum ".python-version" }}-{{ checksum "setup.py" }}
             - v1-dependencies-
       - run:
           name: install dependencies
@@ -15,10 +15,11 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements-dev.txt
+            pip install .
       - save_cache:
           paths:
             - ./venv
-          key: v1-dependencies-{{ checksum "requirements-dev.txt" }}-{{ checksum ".python-version" }}
+          key: v1-dependencies-{{ checksum "requirements-dev.txt" }}-{{ checksum ".python-version" }}-{{ checksum "setup.py" }}
       - run:
           name: run tests
           command: |
