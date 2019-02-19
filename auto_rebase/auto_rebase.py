@@ -30,13 +30,10 @@ class AutoRebase:
         self._git = g
         self._git.fetch('origin')
 
-    def patch_diff_from_master(self, branch: str) -> str:
-        base = self._git.merge_base(branch, 'origin/master')
-        return self.patch_diff(base, branch)
-
-    def patch_diff(self, commit1: str, commit2: str) -> str:
+    def patch_diff(self, branch: str) -> str:
+        diff = self._git.diff(f'origin/master...{branch}')
         with tempfile.TemporaryFile('w') as f:
-            f.write(self._git.diff(commit1, commit2))
+            f.write(diff)
             f.seek(0)
             return self._git.execute(['git', 'patch-id'], istream=f)
 
