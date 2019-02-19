@@ -1,0 +1,17 @@
+version: 2
+jobs:
+  test:
+    <<: *default_executor
+    <<: *default_environment
+    steps:
+      - checkout
+      - run: pyenv install --skip-existing
+      - run: pip install -r requirements-dev.txt
+      - run: pip install auto_rebase/
+      - run:
+          name: test
+          command: pytest auto_rebase
+workflows:
+  version: 2
+  test:
+    - test
