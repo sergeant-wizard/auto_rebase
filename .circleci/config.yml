@@ -25,5 +25,8 @@ jobs:
           command: |
             . venv/bin/activate
             pytest tests --junitxml=test-results
+      - store_artifacts:
+          path: test-results
+          prefix: pytest
       - store_test_results:
           path: test-results
