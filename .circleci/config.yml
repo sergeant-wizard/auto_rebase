@@ -1,17 +1,26 @@
 version: 2
 jobs:
-  test:
-    <<: *default_executor
-    <<: *default_environment
+  build:
+    docker:
+      - image: circleci/python:3.6.2
     steps:
       - checkout
-      - run: pyenv install --skip-existing
-      - run: pip install -r requirements-dev.txt
-      - run: pip install auto_rebase/
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "requirements-dev.txt" }}-{{ checksum ".python-version" }}
+            - v1-dependencies-
       - run:
-          name: test
-          command: pytest auto_rebase
-workflows:
-  version: 2
-  test:
-    - test
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements-dev.txt
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements-dev.txt" }}-{{ checksum ".python-version" }}
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            pytest auto_rebase
