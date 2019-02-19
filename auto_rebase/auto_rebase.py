@@ -85,12 +85,7 @@ def main():
     parser.add_argument('path')
     args = parser.parse_args()
 
-    ar = AutoRebase(
-        g=git.cmd.Git(args.path),
-        host=args.host,
-        repository=args.repository,
-        user_id=args.user_id,
-    )
+    ar = AutoRebase(g=git.cmd.Git(args.path))
 
     for branch in get_pull_requests(args.host, args.repo, args.user_id):
         ar.rebase_with_check(branch)
