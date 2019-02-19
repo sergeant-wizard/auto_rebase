@@ -11,7 +11,7 @@ base_dir = os.path.abspath(os.path.join(
 
 
 def test_patch_diff():
-    branch_1, branch_2 = [f'origin/edit_a_{idx}' for idx in range(1, 3)]
+    branch_1, branch_2 = [f'origin/test/edit_a_{idx}' for idx in range(1, 3)]
     g = git.cmd.Git(base_dir)
     ar = auto_rebase.AutoRebase(g)
     repo = git.Repo(base_dir)

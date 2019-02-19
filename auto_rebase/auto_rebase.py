@@ -78,10 +78,6 @@ class AutoRebase:
 
 
 def main():
-    print('hoge')
-
-
-def main_():
     parser = argparse.ArgumentParser()
     parser.add_argument('host', default='https://github.com')
     parser.add_argument('repository', default='sergeant-wizard/auto_rebase')
