@@ -6,14 +6,28 @@ import git
 import requests
 
 
+def get_pull_requests(host: str, repo: str, user_id: str):
+    assert 'GITHUB_REPO_TOKEN' in os.environ.keys()
+    access_params = {
+        'access_token': os.environ['GITHUB_REPO_TOKEN'],
+        'per_page': 100,
+        'state': 'open',
+    }
+    base_url = f'{host}/api/v3'
+
+    url = f'{base_url}/repos/{repo}/pulls'
+    res = requests.get(url, params=access_params)
+    return [
+        pr['head']['ref'] for pr in res.json()
+        if pr['user']['id'] == user_id
+    ]
+
+
 class AutoRebase:
     def __init__(
-        self, g: git.cmd.Git, host: str, repository: str, user_id: str
+        self, g: git.cmd.Git
     ):
-        self._git = git
-        self._host = host
-        self._repository = repository
-        self._user_id = user_id
+        self._git = g
         self._git.fetch('origin')
 
     def patch_diff_from_master(self, branch: str) -> str:
@@ -62,26 +76,6 @@ class AutoRebase:
             print(f'branch {branch} has patch diffs')
             return False
 
-    def get_pull_requests(self):
-        assert 'GITHUB_REPO_TOKEN' in os.environ.keys()
-        access_params = {
-            'access_token': os.environ['GITHUB_REPO_TOKEN'],
-            'per_page': 100,
-            'state': 'open',
-        }
-        base_url = f'{self._host}/api/v3'
-
-        url = f'{base_url}/repos/{self._repo}/pulls'
-        res = requests.get(url, params=access_params)
-        return [
-            pr['head']['ref'] for pr in res.json()
-            if pr['user']['id'] == self._user_id
-        ]
-
-    def rebase_all(self):
-        for branch in self.get_pull_requests():
-            self.rebase_with_check(branch)
-
 
 def main():
     print('hoge')
@@ -95,12 +89,15 @@ def main_():
     parser.add_argument('path')
     args = parser.parse_args()
 
-    AutoRebase(
+    ar = AutoRebase(
         g=git.cmd.Git(args.path),
         host=args.host,
         repository=args.repository,
         user_id=args.user_id,
-    ).rebase_all()
+    )
+
+    for branch in get_pull_requests(args.host, args.repo, args.user_id):
+        ar.rebase_with_check(branch)
 
 
 if __name__ == '__main__':
