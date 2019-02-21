@@ -64,8 +64,8 @@ class AutoRebase:
         if self._git.rev_parse(branch) == self._git.rev_parse(remote_branch):
             print(f'branch {branch} is up to date')
             return False
-        remote_patch_diff = self.patch_diff_from_master(remote_branch)
-        local_patch_diff = self.patch_diff_from_master(remote_branch)
+        remote_patch_diff = self.patch_diff(remote_branch)
+        local_patch_diff = self.patch_diff(remote_branch)
         if remote_patch_diff == local_patch_diff:
             print(f'branch {branch} ready')
             return True
