@@ -19,7 +19,7 @@ def get_pull_requests(host: str, repo: str, user_id: str):
     res = requests.get(url, params=access_params)
     return [
         pr['head']['ref'] for pr in res.json()
-        if pr['user']['id'] == user_id
+        if pr['user']['id'] == int(user_id)
     ]
 
 
