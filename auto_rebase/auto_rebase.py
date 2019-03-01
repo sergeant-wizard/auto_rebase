@@ -40,11 +40,8 @@ class AutoRebase:
     def rebase(self, base: str) -> bool:
         try:
             self._git.rebase(base)
-        except git.exc.GitCommandError as e:
-            if e.status == 128:
-                return False
-            else:
-                raise e
+        except git.exc.GitCommandError:
+            return False
         finally:
             try:
                 self._git.rebase('--abort')
